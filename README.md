@@ -14,3 +14,6 @@ Just do it.
 
 ## Compatibility
 SaltyBetUpset was made in Ruby v1.9.3 and hasn't been tested in other versions of Ruby.
+
+## Contact
+- Twitter: [@ChrisMPersaud](http://twitter.com/ChrisMPersaud)
