@@ -76,54 +76,46 @@ def salt_generator(url)
 		# DECIDING WHO TO BET ON 
 		selectedplayer = (p1_winrate < p2_winrate) ? 'player1' : 'player2'
 		accounts_hsh = {}
-		File.open("SBaccounts.txt", "r").readlines[0..-1].each{|line|
-			row_arr = line.strip.split(/\t/)
-			accounts_hsh[row_arr[0]] = row_arr[1]
-		}
 
-		# accounts_hsh.each_pair{ |email,pw|
-			# bookie = Mechanize.new 
-			# main_page2 = signin(url,bookie,email,pw).submit
 
-			# CURRENT SALT BALANCE AND HOW MUCH TO BET
-			curr_salt = main_page.search('#balance')[0].text.gsub(',','').to_i # How much Salt I currently have
-			all_in_threshold = 2500
-			wager = (curr_salt<all_in_threshold) ? curr_salt : 
-				(curr_salt<50000) ? 2500  : 
-				(curr_salt<100000) ? 3500 : 
-				(curr_salt<1000000) ? 5000 :
-				(curr_salt<5000000) ? 7500 :
-				(curr_salt<10000000) ? 10000 :
-				(curr_salt<20000000) ? 15000 :
-				20000
-			wager = wager.round
+		# CURRENT SALT BALANCE AND HOW MUCH TO BET
+		curr_salt = main_page.search('#balance')[0].text.gsub(',','').to_i # How much Salt I currently have
+		all_in_threshold = 2500
+		wager = (curr_salt<all_in_threshold) ? curr_salt : 
+			(curr_salt<50000) ? 2500  : 
+			(curr_salt<100000) ? 3500 : 
+			(curr_salt<1000000) ? 5000 :
+			(curr_salt<5000000) ? 7500 :
+			(curr_salt<10000000) ? 10000 :
+			(curr_salt<20000000) ? 15000 :
+			20000
+		wager = wager.round
 
-			# PREAMBLE TO THE BET
-			p "Signed in as #{ARGV[0]}",
-			"Bets are '#{bet_status}'",
-			"Bettor email: #{email}",
-			"Current balance: $#{curr_salt}",
-			"Player 1: '#{p1}' with win ratio of #{p1_winrate}",
-			"Player 2: '#{p2}' with win ratio of #{p2_winrate}",
-			"BOT WILL BET $#{wager} ON #{selectedplayer}...",
-			'==='
+		# PREAMBLE TO THE BET
+		p "Signed in as #{ARGV[0]}",
+		"Bets are '#{bet_status}'",
+		"Current balance: $#{curr_salt}",
+		"Player 1: '#{p1}' with win ratio of #{p1_winrate}",
+		"Player 2: '#{p2}' with win ratio of #{p2_winrate}",
+		"BOT WILL BET $#{wager} ON #{selectedplayer}...",
+		'==='
 
-			# PLACE THE BET AND PRINT CONFIRMATION
-			begin
-				bookie.post(
-					url+'/ajax_place_bet.php',
-					{
-						'radio'=>'on',
-						'selectedplayer'=>selectedplayer,
-						'wager'=>wager.to_s
-					}
-				)		
-			rescue Exception => e
-				p "ERROR PLACING BET. RETRYING IN 3 SECONDS..."
-				sleep 3
-				retry
-			end # DONE: begin...
-		# }
+		# PLACE THE BET AND PRINT CONFIRMATION
+		begin
+			agent.post(
+				url+'/ajax_place_bet.php',
+				{
+					'radio'=>'on',
+					'selectedplayer'=>selectedplayer,
+					'wager'=>wager.to_s
+				}
+			)		
+		rescue Exception => e
+			p "ERROR PLACING BET: #{e}",
+			"RETRYING IN 3 SECONDS..."
+			sleep 3
+			retry
+		end # DONE: begin...
 
 		p "BET COMPLETED AT #{Time.now}!"
 		sleep 60
