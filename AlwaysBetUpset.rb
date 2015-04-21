@@ -30,8 +30,7 @@ def salt_generator(url)
 	end
 
 	begin
-		# REPLACE ARGV VARIABLES WITH YOUR USERNAME AND PASSWORD
-		main_page = signin(url,agent,ARGV[0],ARGV[1]).submit
+		main_page = signin(url,agent,ARGV[0],ARGV[1]).submit # REPLACE ARGV VARIABLES WITH YOUR USERNAME AND PASSWORD IF YOU WANT TO RUN THE CODE FROM RUBY
 	rescue Exception => e
 		p "ERROR LOGGING IN: #{e}. RETRYING IN 5 SECONDS"
 		sleep 5
