@@ -167,9 +167,13 @@ begin
 
 	# After a while of the method running, there is usually an error, so we have the method return false.
 	# When it does that, hopefully we can re-run the method...
-	if(salt_generator(url)===false)
+	# if(salt_generator(url)===false)
+	# 	salt_generator(url)
+	# end	
+
+	(1..9999).each{|x|
 		salt_generator(url)
-	end	
+	}
 rescue Exception => e
 	p "ERROR: #{e}"
 	puts e.backtrace
