@@ -7,6 +7,8 @@
 	require g
 }
 
+require_relative 'helpers/methods.rb'
+
 
 def salt_generator(url)
 	agent = Mechanize.new
@@ -19,7 +21,7 @@ def salt_generator(url)
 		begin
 			signin_form = mech_agent.get(form_url).forms[0]
 		rescue Exception => e
-			p "ERROR OPENING #{form_url}: #{e}"
+			errorLogging(e)
 			return false
 		end
 
@@ -32,9 +34,8 @@ def salt_generator(url)
 	begin
 		main_page = signin(url,agent,ARGV[0],ARGV[1]).submit # REPLACE ARGV VARIABLES WITH YOUR USERNAME AND PASSWORD IF YOU WANT TO RUN THE CODE FROM RUBY
 	rescue Exception => e
-		p "ERROR LOGGING IN: #{e}. RETRYING IN 5 SECONDS"
-		sleep 5
-		retry
+		errorLogging(e)
+		return false
 	end
 
 
@@ -42,9 +43,8 @@ def salt_generator(url)
 	begin
 		stateJSON = agent.get(url+'/state.json').body #=> {p1nam:'...', p2name:'...', ... status:'...', ...}
 	rescue Exception => e
-		p "ERROR GETTING 'state.json' AT #{Time.now}: #{e}. RETRYING IN 5 SECONDS..."
-		sleep 5
-		retry
+		errorLogging(e)
+		return false
 	end # DONE: begin...
 
 
@@ -81,14 +81,15 @@ def salt_generator(url)
 		# CURRENT SALT BALANCE AND HOW MUCH TO BET
 		curr_salt = main_page.search('#balance')[0].text.gsub(',','').to_i # How much Salt I currently have
 		all_in_threshold = 2500
-		wager = (curr_salt<all_in_threshold) ? curr_salt : 
-			(curr_salt<50000) ? 2500  : 
-			(curr_salt<100000) ? 3500 : 
-			(curr_salt<1000000) ? 5000 :
-			(curr_salt<5000000) ? 7500 :
-			(curr_salt<10000000) ? 10000 :
-			(curr_salt<20000000) ? 15000 :
-			20000
+		# wager = (curr_salt<all_in_threshold) ? curr_salt : 
+		# 	(curr_salt<50000) ? 2500  : 
+		# 	(curr_salt<100000) ? 3500 : 
+		# 	(curr_salt<1000000) ? 5000 :
+		# 	(curr_salt<5000000) ? 7500 :
+		# 	(curr_salt<10000000) ? 10000 :
+		# 	(curr_salt<20000000) ? 15000 :
+		# 	20000
+		wager = curr_salt*0.01
 		wager = wager.round
 
 		# PREAMBLE TO THE BET
@@ -111,10 +112,8 @@ def salt_generator(url)
 				}
 			)		
 		rescue Exception => e
-			p "ERROR PLACING BET: #{e}",
-			"RETRYING IN 3 SECONDS..."
-			sleep 3
-			retry
+			errorLogging(e)
+			return false
 		end # DONE: begin...
 
 		p "BET COMPLETED AT #{Time.now}!"
@@ -126,9 +125,8 @@ def salt_generator(url)
 		begin
 			stateJSON = agent.get(url+'/state.json').body #=> {p1nam:'...', p2name:'...', ... status:'...', ...}
 		rescue Exception => e
-			p "ERROR GETTING 'state.json', RETRYING IN 5 SECONDS..."
-			sleep 5
-			retry
+			errorLogging(e)
+			return false
 		end # DONE: begin...
 
 		
@@ -144,9 +142,8 @@ def salt_generator(url)
 		begin
 			stateJSON = agent.get(url+'/state.json').body #=> {p1nam:'...', p2name:'...', ... status:'...', ...}
 		rescue Exception => e
-			p "ERROR GETTING 'state.json' AT #{Time.now}, RETRYING IN 5 SECONDS..."
-			sleep 5
-			retry
+			errorLogging(e)
+			return false
 		end # DONE: begin...
 
 		
@@ -155,7 +152,7 @@ def salt_generator(url)
 		begin
 			salt_generator(url) # Recursive method...the script checks the bets again and again...
 		rescue Exception => e
-			p "ERROR AT #{Time.now}: #{e}"
+			errorLogging(e)
 			return false
 		end
 		
@@ -164,35 +161,7 @@ end # DONE: def salt_generator(stateJSON)
 
 begin
 	url = 'http://www.saltybet.com'
-
-	# After a while of the method running, there is usually an error, so we have the method return false.
-	# When it does that, hopefully we can re-run the method...
-	# if(salt_generator(url)===false)
-	# 	salt_generator(url)
-	# end	
-
-	(1..9999).each{|x|
-		salt_generator(url)
-	}
+	salt_generator(url)
 rescue Exception => e
-	p "ERROR: #{e}"
-	puts e.backtrace
-
-	errorLog = 'ERRORS.txt'
-
-	if(File.exist?(errorLog)===false)
-		File.open(errorLog,'w')
-	end
-
-	File.open(errorLog,'a'){|f|
-		[
-			'====================',
-			Time.now,
-			e,
-			e.backtrace
-		].each{|err| 
-			f.puts(err)
-		}
-	}
-	exit
+	errorLogging(e)
 end
