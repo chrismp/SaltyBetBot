@@ -1,9 +1,12 @@
 def salt_generator(url)
 	agent = Mechanize.new
 
+	username=	ARGV[0]
+	password=	ARGV[1]
+
 	# SIGN IN
 	begin
-		main_page = signin(url,agent,ARGV[0],ARGV[1]).submit # REPLACE ARGV VARIABLES WITH YOUR USERNAME AND PASSWORD IF YOU WANT TO RUN THE CODE FROM RUBY
+		main_page = signin(url, agent, username, password).submit
 	rescue Exception => e
 		errorLogging(e)
 		return false
