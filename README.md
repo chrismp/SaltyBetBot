@@ -1,8 +1,8 @@
-# SaltyBetUpset
-SaltyBetUpset is a Ruby-powered bot that places bets on [SaltyBet](http://saltybet.com), where players bet fake money on fights between video game characters. This bot checks the win-rates for both fighters and bets on the fighter with the lower winrate -- betting upset.
+# SaltyBetBot
+SaltyBetUpset is a Ruby-powered bot that places bets on [SaltyBet](http://saltybet.com), where players bet fake money on fights between video game characters. 
 
 ## How to use
-SaltyBetUpset takes two parameters: email and password. Open `launcher.cmd` in a text editor and replace "EMAIL" and "PASSWORD" with your SaltyBet login email and password. Or open the command prompt and run `ruby AlwaysBetUpset.rb EMAIL PASSWORD`.
+
 
 ## Forking guidelines
 Just do it. 
