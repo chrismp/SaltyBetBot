@@ -1,16 +1,4 @@
-[
-	'rubygems',
-	'open-uri',
-	'mechanize',
-	'json'
-].each{|g| 
-	require g
-}
-
-require_relative 'helpers/methods.rb'
-url = 'http://www.saltybet.com'
-iAmCool = true
-while iAmCool===true
+def salt_generator(url)
 	agent = Mechanize.new
 
 	# SIGN IN
@@ -18,7 +6,7 @@ while iAmCool===true
 		main_page = signin(url,agent,ARGV[0],ARGV[1]).submit # REPLACE ARGV VARIABLES WITH YOUR USERNAME AND PASSWORD IF YOU WANT TO RUN THE CODE FROM RUBY
 	rescue Exception => e
 		errorLogging(e)
-		next
+		return false
 	end
 
 
@@ -27,7 +15,7 @@ while iAmCool===true
 		stateJSON = agent.get(url+'/state.json').body #=> {p1nam:'...', p2name:'...', ... status:'...', ...}
 	rescue Exception => e
 		errorLogging(e)
-		next
+		return false
 	end # DONE: begin...
 
 
@@ -85,7 +73,7 @@ while iAmCool===true
 			)		
 		rescue Exception => e
 			errorLogging(e)
-			next
+			return false
 		end # DONE: begin...
 
 		p "BET COMPLETED AT #{Time.now}!"
@@ -98,7 +86,7 @@ while iAmCool===true
 			stateJSON = agent.get(url+'/state.json').body #=> {p1nam:'...', p2name:'...', ... status:'...', ...}
 		rescue Exception => e
 			errorLogging(e)
-			next
+			return false
 		end # DONE: begin...
 
 		
@@ -115,7 +103,7 @@ while iAmCool===true
 			stateJSON = agent.get(url+'/state.json').body #=> {p1nam:'...', p2name:'...', ... status:'...', ...}
 		rescue Exception => e
 			errorLogging(e)
-			next
+			return false
 		end # DONE: begin...
 
 		
@@ -125,15 +113,58 @@ while iAmCool===true
 			salt_generator(url) # Recursive method...the script checks the bets again and again...
 		rescue Exception => e
 			errorLogging(e)
-			next
-		end		
+			return false
+		end
+		
 	end	# DONE: if(bet_status == 'open')	
-end
-	
+end # DONE: def salt_generator(stateJSON)
 
-# begin
-# 	url = 'http://www.saltybet.com'
-# 	salt_generator(url)
-# rescue Exception => e
-# 	errorLogging(e)
-# end
+def signin(main_url, mech_agent, email, pass)
+	signin = '/authenticate?signin=1'
+	form_url = main_url+signin
+
+	begin
+		signin_form = mech_agent.get(form_url).forms[0]
+	rescue Exception => e
+		errorLogging(e)
+		return false
+	end
+
+	signin_form['authenticate'] = 'signin'
+	signin_form['email'] = email
+	signin_form['pword'] = pass
+	return signin_form
+end
+
+def winrate_getter(winrate_str)
+	if(winrate_str.include?('/'))
+		winrate_arr = winrate_str.split('/')
+		w1 = winrate_arr[0].to_f
+		w2 = winrate_arr[1].to_f
+		return (w1+w2)/2
+	else
+		return winrate_str.to_f
+	end			
+end
+
+def errorLogging(e)
+	p "ERROR: #{e}"
+	puts e.backtrace
+
+	errorLog = 'ERRORS.txt'
+
+	if(File.exist?(errorLog)===false)
+		File.open(errorLog,'w')
+	end
+
+	File.open(errorLog,'a'){|f|
+		[
+			'====================',
+			Time.now,
+			e,
+			e.backtrace
+		].each{|err| 
+			f.puts(err)
+		}
+	}
+end
