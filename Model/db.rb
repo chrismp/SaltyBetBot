@@ -11,6 +11,11 @@ DB.create_table? :Bots do
 	varchar	:Description
 end
 
+DB.create_table? :MatchTypes do 
+	primary_key	:ID
+	varchar		:Type
+end
+
 DB.create_table? :Authors do 
 	Integer	:ID, :unique => true
 	varchar	:Name
@@ -20,11 +25,6 @@ DB.create_table? :Fighters do
 	Integer		:ID,		:unique => true
 	foreign_key	:AuthorID,	:Authors
 	varchar		:Name
-end
-
-DB.create_table? :MatchTypes do 
-	primary_key	:ID
-	varchar		:Type
 end
 
 DB.create_table? :Tiers do 
@@ -49,6 +49,7 @@ DB.create_table? :Matches do
 	Integer		:Player2Meter
 	Integer		:Player1Palette
 	Integer		:Player2Palette
+	Integer		:Winner
 end
 
 DB.create_table? :Bets do
@@ -58,7 +59,6 @@ DB.create_table? :Bets do
 	Integer		:Balance
 	Integer		:Wager
 	Integer		:BetChoice
-	Integer		:Winner
 	Boolean		:BetWon
 end
 
