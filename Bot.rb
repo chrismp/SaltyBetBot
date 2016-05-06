@@ -7,7 +7,7 @@
 	require g
 }
 
-require_relative "Models/db.rb"
+require_relative "Model/db.rb"
 
 email=						ARGV[0]
 password=					ARGV[1]
