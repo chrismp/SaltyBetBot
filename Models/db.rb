@@ -1,14 +1,14 @@
 require "sequel"
 
-DB=	Sequel.sqlite
+DB=	Sequel.sqlite("SaltyBetBotData.db")
 
-DB.create_table :Strategies do 
+DB.create_table? :Strategies do 
 	primary_key	:ID
 	varchar		:Name
 	varchar		:Description
 end
 
-DB.create_table :Bots do 
+DB.create_table? :Bots do 
 	primary_key	:ID
 	foreign_key	:StrategyID, :Strategies
 	varchar		:Username
@@ -16,28 +16,28 @@ DB.create_table :Bots do
 	varchar		:Password
 end
 
-DB.create_table :Authors do 
+DB.create_table? :Authors do 
 	Integer	:ID, :unique => true
 	varchar	:Name
 end
 
-DB.create_table :Fighters do 
+DB.create_table? :Fighters do 
 	Integer		:ID,		:unique => true
 	foreign_key	:AuthorID,	:Authors
 	varchar		:Name
 end
 
-DB.create_table :MatchTypes do 
+DB.create_table? :MatchTypes do 
 	primary_key	:ID
 	varchar		:Type
 end
 
-DB.create_table :Tiers do 
+DB.create_table? :Tiers do 
 	primary_key	:ID
 	varchar		:Tier
 end
 
-DB.create_table :Matches do 
+DB.create_table? :Matches do 
 	Integer		:ID,			:unique => true
 	foreign_key	:TypeID,		:MatchTypes
 	foreign_key	:Player1ID,		:Fighters
@@ -56,7 +56,7 @@ DB.create_table :Matches do
 	Integer		:Player2Palette
 end
 
-DB.create_table :Matches do
+DB.create_table? :Matches do
 	primary_key	:ID
 	foreign_key	:MatchID,	:Matches
 	foreign_key	:BotID,		:Bots
@@ -68,4 +68,4 @@ DB.create_table :Matches do
 end
 
 
-require_relative "class.rb"
+# require_relative "class.rb"

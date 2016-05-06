@@ -1,3 +1,5 @@
+Logs/*
 *.cmd
 *.sh
 *.txt
+*.db
