@@ -63,25 +63,4 @@ DB.create_table? :Bets do
 end
 
 
-# require_relative "class.rb"
-
-class Bot < Sequel::Model(:Bots)
-end
-
-class Author < Sequel::Model(:Authors)
-end
-
-class Fighter < Sequel::Model(:Fighters)
-end
-
-class MatchType < Sequel::Model(:MatchTypes)
-end
-
-class Tier < Sequel::Model(:Tiers)
-end
-
-class Match < Sequel::Model(:Matches)
-end
-
-class Bet < Sequel::Model(:Bets)
-end
+require_relative "class.rb"
