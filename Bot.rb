@@ -1,5 +1,6 @@
 [
 	"rubygems",
+	"bundler/setup",
 	"open-uri",
 	"mechanize",
 	"json"
@@ -23,13 +24,14 @@ signInForm["email"]=		email
 signInForm["pword"]=		password
 signInForm.submit
 
+p "Signed in"
+
 while true
 	# GET BET STATUS
 	MatchStateURL||=baseURL+"/state.json"
 	stateJSON=		agent.get(MatchStateURL).body	# JSON containing some info about current match: fighter names, matches remaining in game mode, etc.
 	stateHash=		JSON.parse(stateJSON)
 	betStatus=		stateHash["status"]			# Are bets "open" or "locked"?
-
 	if betStatus==="open"
 		# GET FIGHTER NAMES, also for Fighter class
 		p1name=	stateHash["p1name"]	# Name of red player/team
@@ -37,28 +39,30 @@ while true
 		if p1name.include?('/')===false && p2name.include?('/')===false	# If either plauyer name has a forward-slash, that means it's a two-fighter team. Don't bet.
 			playerStatsURL=	baseURL+"/ajax_get_stats.php"
 			statsJSON=		agent.get(playerStatsURL).body
-			statsHash=		JSON.parse(statsJSON)
+			if statsJSON!=''
+				statsHash=		JSON.parse(statsJSON)
+				
+				# For MatchType class
+				remaining=	stateHash["remaining"]
+				if remaining.include?"until the next tournament!"
+					matchTypeID=	1
+				end
 
-			# For MatchType class
-			remaining=	stateHash["remaining"]
-			if remaining.include?"until the next tournament!"
-				matchTypeID=	1
+				# For Author class
+				p1author=	statsHash["p1author"]
+				p2author=	statsHash["p2author"]
+
+				# For Matches class
+				p1totalmatches=	statsHash["p1totalmatches"]
+				p2totalmatches=	statsHash["p2totalmatches"]
+				p1winrate=		statsHash["p1winrate"]
+				p2winrate=		statsHash["p2winrate"]
+				p1life=			statsHash["p1life"]
+				p2life=			statsHash["p2life"]
+				p1meter=		statsHash["p1meter"]
+				p2meter=		statsHash["p2meter"]
+				p1palette=		statsHash["p1palette"]
 			end
-
-			# For Author class
-			p1author=	statsHash["p1author"]
-			p2author=	statsHash["p2author"]
-
-			# For Matches class
-			p1totalmatches=	statsHash["p1totalmatches"]
-			p2totalmatches=	statsHash["p2totalmatches"]
-			p1winrate=		statsHash["p1winrate"]
-			p2winrate=		statsHash["p2winrate"]
-			p1life=			statsHash["p1life"]
-			p2life=			statsHash["p2life"]
-			p1meter=		statsHash["p1meter"]
-			p2meter=		statsHash["p2meter"]
-			p1palette=		statsHash["p1palette"]
 
 			# DECIDING WHO TO BET ON 
 			botStrategy=ARGV[2].to_i 
@@ -90,6 +94,8 @@ while true
 					"wager"=>			wager
 				}
 			)
+
+			puts "#{p1name} vs. #{p2name}. Bot bet $#{wager} on #{selectedplayer} at #{Time.now}."
 		end
 	end	# DONE: if betStatus == "open"
 
