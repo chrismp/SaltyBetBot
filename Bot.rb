@@ -1,5 +1,5 @@
 [
-	"rubygems"
+	"rubygems",
 	"open-uri",
 	"mechanize",
 	"json"
