@@ -1,6 +1,5 @@
 [
-	"rubygems",
-	"bundler/setup",
+	"rubygems"
 	"open-uri",
 	"mechanize",
 	"json"
