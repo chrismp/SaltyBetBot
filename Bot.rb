@@ -79,9 +79,15 @@ while true
 
 			# CURRENT SALT BALANCE AND HOW MUCH TO BET
 			mainPage=		agent.get(baseURL)
-			balance=		mainPage.search("#balance")[0].text.gsub(",","").to_i # How much Salt I currently have
+			balanceString=	mainPage.search("#balance")[0].text.gsub(",","")
+			balance=		balanceString.to_i # How much Salt I currently have
 			allInThreshold=	ARGV[3].to_i
-			wager=			balance<allInThreshold ? balance : (balance*0.01).round
+			wagerString=	''
+			(balanceString.length-1).times do |x|
+				digit=	x===0 ? '1' : '0'
+				wagerString << digit
+			end
+			wager=			balance<allInThreshold ? balance : wagerString.to_i
 
 			# For Bet class
 			betChoice=	selectedplayer===p1Pick ? 1 : 2
