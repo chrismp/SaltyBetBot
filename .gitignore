@@ -1,3 +1,4 @@
+_IGNORE/*
 Logs/*
 *.cmd
 *.sh
