@@ -109,6 +109,6 @@ while true
 			sleep 60
 		end
 	end	# DONE: if betStatus == "open"
-	p "Bets closed at #{Time.now}"
-	sleep 30
+	# p "Bets closed at #{Time.now}"
+	sleep 5
 end
