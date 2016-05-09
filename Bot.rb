@@ -96,7 +96,10 @@ while true
 				}
 			)
 
-			p "#{p1name} vs. #{p2name}. Balance: $#{balance}. Bot bet $#{wager} on #{selectedplayer} at #{Time.now}."
+			p "#{p1name} vs. #{p2name}.",
+			"Balance: $#{balance}.",
+			"Bet $#{wager} on #{selectedplayer} at #{Time.now}.",
+			"==="
 			sleep 60
 		end
 	end	# DONE: if betStatus == "open"
