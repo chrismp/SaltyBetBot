@@ -23,11 +23,10 @@ signInForm["email"]=		email
 signInForm["pword"]=		password
 signInForm.submit
 
-puts "Signed in as #{email}"
+p "Signed in as #{email}"
 
 while true
 	# GET BET STATUS
-	puts "Getting bet status."
 	MatchStateURL||=baseURL+"/state.json"
 	stateJSON=		agent.get(MatchStateURL).body	# JSON containing some info about current match: fighter names, matches remaining in game mode, etc.
 	stateHash=		JSON.parse(stateJSON)
@@ -62,6 +61,8 @@ while true
 				p1meter=		statsHash["p1meter"]
 				p2meter=		statsHash["p2meter"]
 				p1palette=		statsHash["p1palette"]
+
+				p "#{p1name} win rate: #{p1winrate}%. #{p2name} win rate: #{p2winrate}%."
 			end
 
 			# DECIDING WHO TO BET ON 
@@ -95,10 +96,10 @@ while true
 				}
 			)
 
-			puts "#{p1name} vs. #{p2name}. Bot bet $#{wager} on #{selectedplayer} at #{Time.now}."
+			p "#{p1name} vs. #{p2name}. Bot bet $#{wager} on #{selectedplayer} at #{Time.now}."
 			sleep 60
 		end
 	end	# DONE: if betStatus == "open"
-	puts "Bets closed at #{Time.now}"
+	p "Bets closed at #{Time.now}"
 	sleep 30
 end
