@@ -23,7 +23,7 @@ signInForm["email"]=		email
 signInForm["pword"]=		password
 signInForm.submit
 
-p "Signed in"
+p "Signed in as #{email}"
 
 while true
 	# GET BET STATUS
@@ -95,8 +95,9 @@ while true
 			)
 
 			puts "#{p1name} vs. #{p2name}. Bot bet $#{wager} on #{selectedplayer} at #{Time.now}."
+			sleep 60
 		end
 	end	# DONE: if betStatus == "open"
-
+	puts "Bets closed at #{Time.now}"
 	sleep 30
 end
