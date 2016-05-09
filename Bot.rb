@@ -23,10 +23,11 @@ signInForm["email"]=		email
 signInForm["pword"]=		password
 signInForm.submit
 
-p "Signed in as #{email}"
+puts "Signed in as #{email}"
 
 while true
 	# GET BET STATUS
+	puts "Getting bet status."
 	MatchStateURL||=baseURL+"/state.json"
 	stateJSON=		agent.get(MatchStateURL).body	# JSON containing some info about current match: fighter names, matches remaining in game mode, etc.
 	stateHash=		JSON.parse(stateJSON)
