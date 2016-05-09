@@ -35,7 +35,7 @@ while true
 		# GET FIGHTER NAMES, also for Fighter class
 		p1name=	stateHash["p1name"]	# Name of red player/team
 		p2name=	stateHash["p2name"]	# Name of blue player/team
-		if p1name.include?('/')===false && p2name.include?('/')===false	# If either plauyer name has a forward-slash, that means it's a two-fighter team. Don't bet.
+		if p1name.include?("Team ")===false && p2name.include?("Team ")===false	# If either plauyer name has "Team ", that means it's a two-fighter team. Don't bet.
 			playerStatsURL=	baseURL+"/ajax_get_stats.php"
 			statsJSON=		agent.get(playerStatsURL).body
 			if statsJSON!=''
